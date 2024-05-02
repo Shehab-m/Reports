@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.leithcarsreports.presentation.composable.DonutChartSample
 
 @Composable
 fun ReportsScreen(viewModel: ReportsViewModel = hiltViewModel()) {
@@ -27,6 +28,7 @@ fun ReportsScreen(viewModel: ReportsViewModel = hiltViewModel()) {
 fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionListener) {
 
     Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+        DonutChartSample()
         Button(onClick = { listener.onClickUploadFile() }) {
             Text(text = "hellloooo", fontSize = 42.sp)
         }

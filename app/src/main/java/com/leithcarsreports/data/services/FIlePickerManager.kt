@@ -1,19 +1,20 @@
-package com.leithcarsreports.services
+package com.leithcarsreports.data.services
 
 import android.content.Context
 import com.leithcarsreports.presentation.app.MainActivity
 import javax.inject.Inject
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import java.io.IOException
 import java.io.InputStream
-
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
@@ -24,7 +25,6 @@ class FilePickerManager @Inject constructor(
     private val context: Context,
     private val activity: MainActivity
 ) : IFilePickerManager {
-
 
     private val openDocumentLauncher =
         activity.registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -52,6 +52,7 @@ class FilePickerManager @Inject constructor(
         }
 
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun pickExcelFile() {
         if (hasStoragePermission()) {
             openFilePicker()
@@ -65,10 +66,14 @@ class FilePickerManager @Inject constructor(
         openDocumentLauncher.launch(mimeTypes)
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun hasStoragePermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             context,
-            Manifest.permission.READ_EXTERNAL_STORAGE
+            Manifest.permission.READ_MEDIA_IMAGES
+        ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.READ_MEDIA_VIDEO
         ) == PackageManager.PERMISSION_GRANTED
     }
 

@@ -2,8 +2,8 @@ package com.leithcarsreports.di
 
 import android.content.Context
 import com.leithcarsreports.presentation.app.MainActivity
-import com.leithcarsreports.services.FilePickerManager
-import com.leithcarsreports.services.IFilePickerManager
+import com.leithcarsreports.data.services.FilePickerManager
+import com.leithcarsreports.data.services.IFilePickerManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,8 +20,15 @@ object AppModule {
     @Provides
     fun provideFIlePickerManager(
         @ApplicationContext context: Context,
-        @ActivityContext activity: MainActivity
+        activity: MainActivity
     ): IFilePickerManager {
-        return FilePickerManager(context,activity)
+        return FilePickerManager(context, activity)
+    }
+
+    @Singleton
+    @Provides
+    fun provideMainActivity(
+    ): MainActivity {
+        return MainActivity()
     }
 }
