@@ -65,6 +65,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+//    implementation(files("libs/poi-5.2.3.jar"))
+//    implementation(files("libs\\poi-3.7.jar"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -134,7 +136,11 @@ dependencies {
     implementation ("androidx.room:room-paging:$room_version")
     implementation ("androidx.room:room-ktx:$room_version")
     // Apache Poi
-    implementation("org.apache.poi:poi:5.2.4")
+    implementation(libs.poi)
+    implementation(libs.poi.ooxml)
+//    implementation (libs.ooxml.schemas)
+//    implementation (libs.poi.v401)
+//    implementation (libs.poi.ooxml.v401)
     // Activity & Fragment X
     implementation ("androidx.activity:activity-ktx:1.4.0")
     implementation ("androidx.fragment:fragment-ktx:1.4.0")

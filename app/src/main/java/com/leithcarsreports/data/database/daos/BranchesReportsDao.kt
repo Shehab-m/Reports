@@ -22,4 +22,7 @@ interface BranchesReportsDao {
 
     @Insert
     suspend fun insertBranchReport(report : BranchReportLocalDTO)
+
+    @Insert
+    suspend fun insertBranchesReports(reports : List<BranchReportLocalDTO>)
 }
