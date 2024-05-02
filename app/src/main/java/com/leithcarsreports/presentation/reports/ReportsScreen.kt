@@ -1,5 +1,6 @@
 package com.leithcarsreports.presentation.reports
 
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aay.compose.donutChart.model.PieChartData
 import com.leithcarsreports.presentation.composable.DonutChartSample
+import java.io.IOException
 
 @Composable
 fun ReportsScreen(viewModel: ReportsViewModel = hiltViewModel()) {
@@ -24,22 +26,30 @@ fun ReportsScreen(viewModel: ReportsViewModel = hiltViewModel()) {
 
     ReportsScreenContent(state, viewModel)
 }
-
 @Composable
 fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionListener) {
     val context = LocalContext.current
-    val launcher =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { result ->
-            result?.let {
-                val inputStream = context.contentResolver.openInputStream(result)
-                inputStream?.let {
-                    listener.onClickUploadFile(inputStream)
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { resultUri ->
+        resultUri?.let {
+            try {
+                context.contentResolver.openInputStream(it)?.use { stream ->
+                    // Debugging: Log the available bytes (Remove in production!)
+                    Log.d("ReportsScreenContent", "Available bytes before processing: ${stream.available()}")
+
+                    listener.onClickUploadFile(stream)
+
+                    // Optionally read the stream here if needed
+                    val bytes = stream.readBytes()  // Only if necessary for debugging or processing
+                    Log.d("ReportsScreenContent", "Read bytes length: ${bytes.size}")
                 }
-                val bytes = inputStream?.readBytes()
-                println(bytes)
-                inputStream?.close()
+            } catch (e: IOException) {
+                Log.e("ReportsScreenContent", "IOException when handling the stream: ${e.message}")
+            } catch (e: Exception) {
+                Log.e("ReportsScreenContent", "General exception when processing the file: ${e.message}")
             }
         }
+    }
+
     Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
         val colors = listOf(
             Color(0xFFADC9FF),
@@ -63,9 +73,7 @@ fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionList
         }
 
         DonutChartSample(chartData)
-        Button(onClick = {
-            launcher.launch("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        }) {
+        Button(onClick = { launcher.launch("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") }) {
             Text(text = state.buttonText, fontSize = 42.sp)
         }
     }
