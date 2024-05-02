@@ -69,6 +69,14 @@ class ReportsViewModel @Inject constructor(
             }
         }
     }
+    // ViewModel class setup (ensure this logic is appropriately integrated)
+    override fun toggleChartDisplay() {
+        val currentToggle = state.value.chartToggle
+        updateState {
+            Log.d("ViewModel", "Toggling chart from ${currentToggle} to ${!currentToggle}")
+            it.copy(chartToggle = !currentToggle)
+        }
+    }
 
     private fun combineReportsByBranchName(reports: List<BranchReportLocalDTO>): List<BranchReportLocalDTO> {
         val combinedReports = mutableListOf<BranchReportLocalDTO>()

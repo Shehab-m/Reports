@@ -5,4 +5,6 @@ import java.io.InputStream
 
 interface ReportsInteractionListener : BaseInteractionListener {
     fun onClickUploadFile(inputStream: InputStream)
+    fun toggleChartDisplay()  // Ensure this method is declared
+
 }

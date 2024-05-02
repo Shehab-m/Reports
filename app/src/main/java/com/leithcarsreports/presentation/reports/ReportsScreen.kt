@@ -23,7 +23,6 @@ import java.io.IOException
 @Composable
 fun ReportsScreen(viewModel: ReportsViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
-
     ReportsScreenContent(state, viewModel)
 }
 @Composable
@@ -33,13 +32,9 @@ fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionList
         resultUri?.let {
             try {
                 context.contentResolver.openInputStream(it)?.use { stream ->
-                    // Debugging: Log the available bytes (Remove in production!)
                     Log.d("ReportsScreenContent", "Available bytes before processing: ${stream.available()}")
-
                     listener.onClickUploadFile(stream)
-
-                    // Optionally read the stream here if needed
-                    val bytes = stream.readBytes()  // Only if necessary for debugging or processing
+                    val bytes = stream.readBytes()
                     Log.d("ReportsScreenContent", "Read bytes length: ${bytes.size}")
                 }
             } catch (e: IOException) {
@@ -50,29 +45,39 @@ fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionList
         }
     }
 
+    val colors = listOf(
+        Color(0xFFADC9FF),
+        Color(0xFF0027FF),
+        Color(0xFF1F233A),
+        Color(0xFFFF0000),
+        Color(0xFF00FF00),
+        Color(0xFFFFFF00),
+    )
+    val chartData = if (state.reports.isNotEmpty()) {
+        state.reports.mapIndexed { index, report ->
+            val colorIndex = index % colors.size
+            PieChartData(
+                partName = report.branchName,
+                data = report.branchSalesValue,
+                color = colors[colorIndex],
+            )
+        }
+    } else {
+        emptyList()
+    }
+
     Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-        val colors = listOf(
-            Color(0xFFADC9FF),
-            Color(0xFF0027FF),
-            Color(0xFF1F233A),
-            Color(0xFFFF0000),
-            Color(0xFF00FF00),
-            Color(0xFFFFFF00),
-        )
-        val chartData = if (state.reports.isNotEmpty()) {
-            state.reports.mapIndexed { index, report ->
-                val colorIndex = index % colors.size
-                PieChartData(
-                    partName = report.branchName,
-                    data = report.branchSalesValue,
-                    color = colors[colorIndex],
-                )
-            }
-        } else {
-            emptyList()
+        Button(onClick = { listener.toggleChartDisplay() }) {
+            Text("Toggle Chart", fontSize = 18.sp)
         }
 
-        DonutChartSample(chartData)
+        if (state.chartToggle) {
+            DonutChartSample(chartData)
+        } else {
+            // Example of how you might want to modify the chart for the second state
+            DonutChartSample(chartData.map { it.copy(data = it.data * 1.1) })  // Example modification
+        }
+
         Button(onClick = { launcher.launch("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") }) {
             Text(text = state.buttonText, fontSize = 42.sp)
         }
