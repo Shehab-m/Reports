@@ -144,5 +144,6 @@ dependencies {
     // Activity & Fragment X
     implementation ("androidx.activity:activity-ktx:1.4.0")
     implementation ("androidx.fragment:fragment-ktx:1.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 
 }

@@ -4,5 +4,6 @@ import com.leithcarsreports.presentation.base.BaseInteractionListener
 import java.io.InputStream
 
 interface ReportsInteractionListener : BaseInteractionListener {
-    fun onClickUploadFile(inputStream: InputStream)
+    fun onClickUploadFileBranches(inputStream: InputStream)
+    fun onClickUploadFileCars(inputStream: InputStream)
 }
