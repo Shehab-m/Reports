@@ -6,7 +6,10 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
@@ -17,12 +20,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aay.compose.donutChart.model.PieChartData
+import com.leithcarsreports.R
 import com.leithcarsreports.presentation.composable.DonutChartSample
 import java.io.IOException
 import java.io.InputStream
@@ -64,36 +73,48 @@ fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionList
     val branchesCarsLauncher = launchOpenDocument(listener::onClickUploadFileBranches)
     val staffLauncher = launchOpenDocument(listener::onClickUploadFileBranches)
     val carsLauncher = launchOpenDocument(listener::onClickUploadFileBranches)
-    Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-        HorizontalPager(
-            modifier = Modifier,
-            state = pagerState,
-            userScrollEnabled = true,
-        ) { page ->
+    Box(
+        modifier = Modifier.fillMaxSize(). background (Color(0xFFF5F5F5)) // Use the hex code for light gray
+    ) {
+        val imagePainter: Painter =
+            painterResource(id = R.drawable.screenshot) // Replace 'your_image' with your actual image resource name
+        Image(
+            painter = imagePainter,
+            contentDescription = "Background",
+            modifier = Modifier.fillMaxSize().alpha(0.4f), // Apply 50% transparency
+            contentScale = ContentScale.Fit
+        )
+        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+            HorizontalPager(
+                modifier = Modifier,
+                state = pagerState,
+                userScrollEnabled = true,
+            ) { page ->
 
-            when (page) {
-                1 -> {
-                    DonutChartSample(chartData)
-                }
+                when (page) {
+                    1 -> {
+                        DonutChartSample(chartData)
+                    }
 
-                2 -> {
+                    2 -> {
 
-                }
+                    }
 
-                else -> {
+                    else -> {
 
+                    }
                 }
             }
-        }
-        Button(
-            onClick = { when (pagerState.currentPage) {
-                1 -> {
-                    branchesLauncher.launch(xlsxFilter)
+            Button(
+                onClick = { when (pagerState.currentPage) {
+                    1 -> {
+                        branchesLauncher.launch(xlsxFilter)
+                    }
                 }
+                }
+            ) {
+                Text(text = state.buttonText, fontSize = 42.sp)
             }
-        }
-        ) {
-            Text(text = state.buttonText, fontSize = 42.sp)
         }
     }
 }
