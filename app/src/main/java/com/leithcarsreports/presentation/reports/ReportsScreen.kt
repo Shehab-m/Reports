@@ -92,11 +92,11 @@ fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionList
             ) { page ->
 
                 when (page) {
-                    1 -> {
+                    0 -> {
                         DonutChartSample(chartData)
                     }
 
-                    2 -> {
+                    1 -> {
 
                     }
 
@@ -107,7 +107,7 @@ fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionList
             }
             Button(
                 onClick = { when (pagerState.currentPage) {
-                    1 -> {
+                    0 -> {
                         branchesLauncher.launch(xlsxFilter)
                     }
                 }
