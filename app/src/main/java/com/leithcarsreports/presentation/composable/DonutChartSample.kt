@@ -7,13 +7,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.aay.compose.donutChart.DonutChart
+import com.aay.compose.donutChart.PieChart
 import com.aay.compose.donutChart.model.PieChartData
 @Composable
 fun DonutChartSample(data: List<PieChartData>) {
     DonutChart(
         modifier = Modifier
-            .width(464.dp)
-            .height(517.dp),
+    .width(764.dp)
+        .height(617.dp),
         pieChartData = data,
     )
+//    PieChart(
+//        modifier = Modifier
+//            .width(764.dp)
+//            .height(517.dp),
+//        pieChartData = data,
+//    )
 }
+
