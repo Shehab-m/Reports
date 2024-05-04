@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.InputStream
 import javax.inject.Inject
+
 @HiltViewModel
 class ReportsViewModel @Inject constructor(
     private val branchesReportsDao: BranchesReportsDao
@@ -24,6 +25,7 @@ class ReportsViewModel @Inject constructor(
     init {
         getChartsData()
     }
+
     override fun onClickUploadFile(inputStream: InputStream) {
         try {
             val workbook: Workbook = XSSFWorkbook(inputStream)
@@ -48,10 +50,11 @@ class ReportsViewModel @Inject constructor(
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
-           inputStream.close()
+            inputStream.close()
         }
     }
-//    override fun onClickUploadFile(inputStream: InputStream) {
+
+    //    override fun onClickUploadFile(inputStream: InputStream) {
 //        try {
 //            inputStream.use { stream ->
 //                val workbook: Workbook = XSSFWorkbook(stream)
@@ -102,7 +105,10 @@ class ReportsViewModel @Inject constructor(
         viewModelScope.launch {
             branchesReportsDao.getBranchesReports().collectLatest { reports ->
                 val combinedReports = combineReportsByBranchName(reports)
-                Log.d("ReportsViewModel", "Combined Reports: ${combinedReports.map { "${it.branchName}: ${it.branchSalesValue}" }}")
+                Log.d(
+                    "ReportsViewModel",
+                    "Combined Reports: ${combinedReports.map { "${it.branchName}: ${it.branchSalesValue}" }}"
+                )
                 updateState { it.copy(reports = combinedReports) }
             }
         }
@@ -114,10 +120,18 @@ class ReportsViewModel @Inject constructor(
         reports.forEach { report ->
             val currentSalesValue = branchSalesMap.getOrDefault(report.branchName, 0.0)
             branchSalesMap[report.branchName] = currentSalesValue + report.branchSalesValue
-            Log.d("ReportsViewModel", "Processing branch: ${report.branchName} with sales: ${report.branchSalesValue}")
+            Log.d(
+                "ReportsViewModel",
+                "Processing branch: ${report.branchName} with sales: ${report.branchSalesValue}"
+            )
         }
         branchSalesMap.forEach { (branchName, totalSales) ->
-            combinedReports.add(BranchReportLocalDTO(branchName = branchName, branchSalesValue = totalSales))
+            combinedReports.add(
+                BranchReportLocalDTO(
+                    branchName = branchName,
+                    branchSalesValue = totalSales
+                )
+            )
             Log.d("ReportsViewModel", "Final Branch Data: $branchName, Total Sales: $totalSales")
         }
         return combinedReports
@@ -138,10 +152,10 @@ object Branches {
     val ARBED_NAME = ReportsViewModel.CellIndex(row = 28, column = 3)
     val ARBED_SALES = ReportsViewModel.CellIndex(row = 36, column = 2)
     val FLEET_NAME = ReportsViewModel.CellIndex(row = 37, column = 3)
-    val FLEET_SALES = ReportsViewModel. CellIndex(row = 39, column = 2)
+    val FLEET_SALES = ReportsViewModel.CellIndex(row = 39, column = 2)
 }
 
-object AlmntakaAlhora{
+object AlmntakaAlhora {
     val SalesMan1Name = ReportsViewModel.CellIndex(row = 2, column = 16)
     val SalesMan1Value = ReportsViewModel.CellIndex(row = 2, column = 2)
     val SalesMan2Name = ReportsViewModel.CellIndex(row = 3, column = 16)
@@ -156,9 +170,29 @@ object AlmntakaAlhora{
     val SalesMan6Value = ReportsViewModel.CellIndex(row = 7, column = 2)
     val SalesMan7Name = ReportsViewModel.CellIndex(row = 8, column = 16)
     val SalesMan7Value = ReportsViewModel.CellIndex(row = 8, column = 2)
+    val DongFengName = ReportsViewModel.CellIndex(row = 1, column = 15)
+    val DongFengValue = ReportsViewModel.CellIndex(row = 9, column = 15)
+    val BydName = ReportsViewModel.CellIndex(row = 1, column = 14)
+    val BydValue = ReportsViewModel.CellIndex(row = 9, column = 14)
+    val VwID3_4_6Name = ReportsViewModel.CellIndex(row = 1, column = 13)
+    val VwID3_4_6Value = ReportsViewModel.CellIndex(row = 9, column = 13)
+    val Honda_E_Ns1Name = ReportsViewModel.CellIndex(row = 1, column = 12)
+    val Honda_E_Ns1Value = ReportsViewModel.CellIndex(row = 9, column = 12)
+    val UsedName = ReportsViewModel.CellIndex(row = 1, column = 11)
+    val UsedValue = ReportsViewModel.CellIndex(row = 9, column = 11)
+    val WulingName = ReportsViewModel.CellIndex(row = 1, column = 10)
+    val WulingValue = ReportsViewModel.CellIndex(row = 9, column = 10)
+    val JmevName = ReportsViewModel.CellIndex(row = 1, column = 9)
+    val JmevValue = ReportsViewModel.CellIndex(row = 9, column = 9)
+    val JacName = ReportsViewModel.CellIndex(row = 1, column = 8)
+    val JacValue = ReportsViewModel.CellIndex(row = 9, column = 8)
+    val MgName = ReportsViewModel.CellIndex(row = 1, column = 7)
+    val MgValue = ReportsViewModel.CellIndex(row = 9, column = 7)
+
+
 }
 
- object KhaldaMulitBrand{
+object KhaldaMulitBrand {
     val SalesMan1Name = ReportsViewModel.CellIndex(row = 12, column = 16)
     val SalesMan1Value = ReportsViewModel.CellIndex(row = 12, column = 2)
     val SalesMan2Name = ReportsViewModel.CellIndex(row = 13, column = 16)
@@ -169,9 +203,27 @@ object AlmntakaAlhora{
     val SalesMan4Value = ReportsViewModel.CellIndex(row = 15, column = 2)
     val SalesMan5Name = ReportsViewModel.CellIndex(row = 16, column = 16)
     val SalesMan5Value = ReportsViewModel.CellIndex(row = 16, column = 2)
+    val DongFengName = ReportsViewModel.CellIndex(row = 11, column = 15)
+    val DongFengValue = ReportsViewModel.CellIndex(row = 17, column = 15)
+    val BydName = ReportsViewModel.CellIndex(row = 11, column = 14)
+    val BydValue = ReportsViewModel.CellIndex(row = 17, column = 14)
+    val VwID3_4_6Name = ReportsViewModel.CellIndex(row = 11, column = 13)
+    val VwID3_4_6Value = ReportsViewModel.CellIndex(row = 17, column = 13)
+    val Honda_E_Ns1Name = ReportsViewModel.CellIndex(row = 11, column = 12)
+    val Honda_E_Ns1Value = ReportsViewModel.CellIndex(row = 17, column = 12)
+    val UsedName = ReportsViewModel.CellIndex(row = 11, column = 11)
+    val UsedValue = ReportsViewModel.CellIndex(row = 17, column = 11)
+    val WulingName = ReportsViewModel.CellIndex(row = 11, column = 10)
+    val WulingValue = ReportsViewModel.CellIndex(row = 17, column = 10)
+    val JmevName = ReportsViewModel.CellIndex(row = 11, column = 9)
+    val JmevValue = ReportsViewModel.CellIndex(row = 17, column = 9)
+    val JacName = ReportsViewModel.CellIndex(row = 11, column = 8)
+    val JacValue = ReportsViewModel.CellIndex(row = 17, column = 8)
+    val MgName = ReportsViewModel.CellIndex(row = 11, column = 7)
+    val MgValue = ReportsViewModel.CellIndex(row = 17, column = 7)
 }
 
-object KkaldaDongFeng{
+object KkaldaDongFeng {
     val SalesMan1Name = ReportsViewModel.CellIndex(row = 20, column = 16)
     val SalesMan1Value = ReportsViewModel.CellIndex(row = 20, column = 2)
     val SalesMan2Name = ReportsViewModel.CellIndex(row = 21, column = 16)
@@ -184,6 +236,33 @@ object KkaldaDongFeng{
     val SalesMan5Value = ReportsViewModel.CellIndex(row = 24, column = 2)
     val SalesMan6Name = ReportsViewModel.CellIndex(row = 25, column = 16)
     val SalesMan6Value = ReportsViewModel.CellIndex(row = 25, column = 2)
+    val BydName = ReportsViewModel.CellIndex(row = 19, column = 3)
+    val BydValue = ReportsViewModel.CellIndex(row = 26, column = 3)
+    val HugeName = ReportsViewModel.CellIndex(row = 19, column = 15)
+    val HugeValue = ReportsViewModel.CellIndex(row = 26, column = 4)
+
+    val Rich_6Name = ReportsViewModel.CellIndex(row = 19, column = 13)
+    val Rich_6Value = ReportsViewModel.CellIndex(row = 26, column = 5)
+    val MnvName = ReportsViewModel.CellIndex(row = 19, column = 12)
+    val MnvValue = ReportsViewModel.CellIndex(row = 26, column = 6)
+    val M5Name = ReportsViewModel.CellIndex(row = 19, column = 11)
+    val M5Value = ReportsViewModel.CellIndex(row = 26, column = 7)
+    val v_e4Name = ReportsViewModel.CellIndex(row = 19, column = 10)
+    val v_e4Value = ReportsViewModel.CellIndex(row = 26, column = 8)
+    val FridayName = ReportsViewModel.CellIndex(row = 19, column = 9)
+    val FridayValue = ReportsViewModel.CellIndex(row = 26, column = 9)
+    val S60Name = ReportsViewModel.CellIndex(row = 19, column = 8)
+    val S60Value = ReportsViewModel.CellIndex(row = 26, column = 10)
+    val A30Name = ReportsViewModel.CellIndex(row = 19, column = 7)
+    val A30Value = ReportsViewModel.CellIndex(row = 26, column = 11)
+    val D60Name = ReportsViewModel.CellIndex(row = 19, column = 8)
+    val D60Value = ReportsViewModel.CellIndex(row = 26, column = 12)
+    val E70Name = ReportsViewModel.CellIndex(row = 19, column = 7)
+    val E70Value = ReportsViewModel.CellIndex(row = 26, column = 13)
+    val Ex1Name = ReportsViewModel.CellIndex(row = 19, column = 8)
+    val Ex1Value = ReportsViewModel.CellIndex(row = 26, column = 14)
+    val A60maxName = ReportsViewModel.CellIndex(row = 19, column = 7)
+    val A60maxValue = ReportsViewModel.CellIndex(row = 26, column = 15)
 }
 
 object Arbad {
@@ -199,9 +278,66 @@ object Arbad {
     val SalesMan5Value = ReportsViewModel.CellIndex(row = 34, column = 2)
     val SalesMan6Name = ReportsViewModel.CellIndex(row = 35, column = 16)
     val SalesMan6Value = ReportsViewModel.CellIndex(row = 35, column = 2)
+    val DongFengName = ReportsViewModel.CellIndex(row = 29, column = 15)
+    val DongFengValue = ReportsViewModel.CellIndex(row = 36, column = 15)
+    val BydName = ReportsViewModel.CellIndex(row = 29, column = 14)
+    val BydValue = ReportsViewModel.CellIndex(row = 36, column = 14)
+    val VwID3_4_6Name = ReportsViewModel.CellIndex(row = 29, column = 13)
+    val VwID3_4_6Value = ReportsViewModel.CellIndex(row = 36, column = 13)
+    val Honda_E_Ns1Name = ReportsViewModel.CellIndex(row = 29, column = 12)
+    val Honda_E_Ns1Value = ReportsViewModel.CellIndex(row = 36, column = 12)
+    val UsedName = ReportsViewModel.CellIndex(row = 29, column = 11)
+    val UsedValue = ReportsViewModel.CellIndex(row = 36, column = 11)
+    val WulingName = ReportsViewModel.CellIndex(row = 29, column = 10)
+    val WulingValue = ReportsViewModel.CellIndex(row = 36, column = 10)
+    val JmevName = ReportsViewModel.CellIndex(row = 29, column = 9)
+    val JmevValue = ReportsViewModel.CellIndex(row = 36, column = 9)
+    val JacName = ReportsViewModel.CellIndex(row = 29, column = 8)
+    val JacValue = ReportsViewModel.CellIndex(row = 36, column = 8)
+    val MgName = ReportsViewModel.CellIndex(row = 29, column = 7)
+    val MgValue = ReportsViewModel.CellIndex(row = 36, column = 7)
 }
 
-object Fleet{
+object Fleet {
     val SalesMan1Name = ReportsViewModel.CellIndex(row = 39, column = 16)
     val SalesMan1Value = ReportsViewModel.CellIndex(row = 39, column = 15)
+    val DongFengName = ReportsViewModel.CellIndex(row = 38, column = 15)
+    val DongFengValue = ReportsViewModel.CellIndex(row = 39, column = 15)
+    val BydName = ReportsViewModel.CellIndex(row = 38, column = 14)
+    val BydValue = ReportsViewModel.CellIndex(row = 39, column = 14)
+    val VwID3_4_6Name = ReportsViewModel.CellIndex(row = 38, column = 13)
+    val VwID3_4_6Value = ReportsViewModel.CellIndex(row = 39, column = 13)
+    val Honda_E_Ns1Name = ReportsViewModel.CellIndex(row = 38, column = 12)
+    val Honda_E_Ns1Value = ReportsViewModel.CellIndex(row = 39, column = 12)
+    val UsedName = ReportsViewModel.CellIndex(row = 38, column = 11)
+    val UsedValue = ReportsViewModel.CellIndex(row = 39, column = 11)
+    val WulingName = ReportsViewModel.CellIndex(row = 38, column = 10)
+    val WulingValue = ReportsViewModel.CellIndex(row = 39, column = 10)
+    val JmevName = ReportsViewModel.CellIndex(row = 38, column = 9)
+    val JmevValue = ReportsViewModel.CellIndex(row = 39, column = 9)
+    val JacName = ReportsViewModel.CellIndex(row = 38, column = 8)
+    val JacValue = ReportsViewModel.CellIndex(row = 39, column = 8)
+    val MgName = ReportsViewModel.CellIndex(row = 38, column = 7)
+    val MgValue = ReportsViewModel.CellIndex(row = 39, column = 7)
+}
+
+object TotalCarsSells{
+    val DongFengName = ReportsViewModel.CellIndex(row = 40, column = 15)
+    val DongFengValue = ReportsViewModel.CellIndex(row = 41, column = 15)
+    val BydName = ReportsViewModel.CellIndex(row = 40, column = 14)
+    val BydValue = ReportsViewModel.CellIndex(row = 41, column = 14)
+    val VwID3_4_6Name = ReportsViewModel.CellIndex(row = 40, column = 13)
+    val VwID3_4_6Value = ReportsViewModel.CellIndex(row = 41, column = 13)
+    val Honda_E_Ns1Name = ReportsViewModel.CellIndex(row = 40, column = 12)
+    val Honda_E_Ns1Value = ReportsViewModel.CellIndex(row = 41, column = 12)
+    val UsedName = ReportsViewModel.CellIndex(row = 40, column = 11)
+    val UsedValue = ReportsViewModel.CellIndex(row = 41, column = 11)
+    val WulingName = ReportsViewModel.CellIndex(row = 40, column = 10)
+    val WulingValue = ReportsViewModel.CellIndex(row = 41, column = 10)
+    val JmevName = ReportsViewModel.CellIndex(row = 40, column = 9)
+    val JmevValue = ReportsViewModel.CellIndex(row = 41, column = 9)
+    val JacName = ReportsViewModel.CellIndex(row = 40, column = 8)
+    val JacValue = ReportsViewModel.CellIndex(row = 41, column = 8)
+    val MgName = ReportsViewModel.CellIndex(row = 40, column = 7)
+    val MgValue = ReportsViewModel.CellIndex(row = 41, column = 7)
 }
