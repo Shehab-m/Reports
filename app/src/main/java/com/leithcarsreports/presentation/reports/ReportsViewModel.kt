@@ -33,45 +33,45 @@ class ReportsViewModel @Inject constructor(
         getChartsData()
     }
 
-//    override fun onClickUploadFileBranches(inputStream: InputStream) {
-//        try {
-//            inputStream.use { stream ->
-//                val workbook: Workbook = XSSFWorkbook(stream)
-//                val sheet: Sheet = workbook.getSheetAt(0)
-//                val reports = mutableListOf<BranchReportLocalDTO>()
-//                val branchInfo = listOf(
-//                    Branches.ALMNTAKA_ALHORA_NAME,
-//                    Branches.ALMNTAKA_ALHORA_SALES,
-//                    Branches.KHALDA_MULTI_BRAND_NAME,
-//                    Branches.KHALDA_MULTI_BRAND_SALES,
-//                    Branches.KHALDA_DONGFENG_NAME,
-//                    Branches.KHALDA_DONGFENG_SALES,
-//                    Branches.ARBED_NAME,
-//                    Branches.ARBED_SALES,
-//                    Branches.FLEET_NAME,
-//                    Branches.FLEET_SALES,
-//                )
-//                for (i in branchInfo.indices step 2) {
-//                    val branchNameCell: Cell =
-//                        sheet.getRow(branchInfo[i].row).getCell(branchInfo[i].column)
-//                    val branchName: String = branchNameCell.stringCellValue
-//                    val totalSalesCell: Cell =
-//                        sheet.getRow(branchInfo[i + 1].row).getCell(branchInfo[i + 1].column)
-//                    val totalSales: Double = totalSalesCell.numericCellValue
-//                    reports.add(
-//                        BranchReportLocalDTO(
-//                            branchName = branchName, branchSalesValue = totalSales
-//                        )
-//                    )
-//                }
-//                viewModelScope.launch {
-//                    saveBranchesReportData(reports)
-//                }
-//            }
-//        } catch (e: Exception) {
-//            Log.e("ReportsViewModel", "Error processing Excel file", e)
-//        }
-//    }
+    override fun onClickUploadFileBranches(inputStream: InputStream) {
+        try {
+            inputStream.use { stream ->
+                val workbook: Workbook = XSSFWorkbook(stream)
+                val sheet: Sheet = workbook.getSheetAt(0)
+                val reports = mutableListOf<BranchReportLocalDTO>()
+                val branchInfo = listOf(
+                    Branches.ALMNTAKA_ALHORA_NAME,
+                    Branches.ALMNTAKA_ALHORA_SALES,
+                    Branches.KHALDA_MULTI_BRAND_NAME,
+                    Branches.KHALDA_MULTI_BRAND_SALES,
+                    Branches.KHALDA_DONGFENG_NAME,
+                    Branches.KHALDA_DONGFENG_SALES,
+                    Branches.ARBED_NAME,
+                    Branches.ARBED_SALES,
+                    Branches.FLEET_NAME,
+                    Branches.FLEET_SALES,
+                )
+                for (i in branchInfo.indices step 2) {
+                    val branchNameCell: Cell =
+                        sheet.getRow(branchInfo[i].row).getCell(branchInfo[i].column)
+                    val branchName: String = branchNameCell.stringCellValue
+                    val totalSalesCell: Cell =
+                        sheet.getRow(branchInfo[i + 1].row).getCell(branchInfo[i + 1].column)
+                    val totalSales: Double = totalSalesCell.numericCellValue
+                    reports.add(
+                        BranchReportLocalDTO(
+                            branchName = branchName, branchSalesValue = totalSales
+                        )
+                    )
+                }
+                viewModelScope.launch {
+                    saveBranchesReportData(reports)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("ReportsViewModel", "Error processing Excel file", e)
+        }
+    }
 
     override fun onClickUploadFileCars(inputStream: InputStream) {
         try {
@@ -280,33 +280,33 @@ class ReportsViewModel @Inject constructor(
 //            return reports
 //    }
 
-    override fun onClickUploadFileBranches(inputStream: InputStream) {
-        try {
-            val workbook: Workbook = XSSFWorkbook(inputStream)
-            val sheet: Sheet = workbook.getSheetAt(0)
-            // Iterate over all rows in the sheet
-            for (rowIndex in 0 until sheet.physicalNumberOfRows) {
-                val row: Row = sheet.getRow(rowIndex)
-                // Iterate over all cells in the row
-                for (colIndex in 0 until row.physicalNumberOfCells) {
-                    val cell: Cell = row.getCell(colIndex)
-                    val cellValue: String = when (cell.cellType) {
-                        CellType.NUMERIC -> cell.numericCellValue.toString()
-                        CellType.STRING -> cell.stringCellValue
-                        CellType.BOOLEAN -> cell.booleanCellValue.toString()
-                        CellType.FORMULA -> cell.cellFormula
-                        else -> ""
-                    }
-                    // Log cell content
-                    Log.d("Cell[$rowIndex][$colIndex]: ", cellValue)
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-//            inputStream.close()
-        }
-    }
+//    override fun onClickUploadFileBranches(inputStream: InputStream) {
+//        try {
+//            val workbook: Workbook = XSSFWorkbook(inputStream)
+//            val sheet: Sheet = workbook.getSheetAt(0)
+//            // Iterate over all rows in the sheet
+//            for (rowIndex in 0 until sheet.physicalNumberOfRows) {
+//                val row: Row = sheet.getRow(rowIndex)
+//                // Iterate over all cells in the row
+//                for (colIndex in 0 until row.physicalNumberOfCells) {
+//                    val cell: Cell = row.getCell(colIndex)
+//                    val cellValue: String = when (cell.cellType) {
+//                        CellType.NUMERIC -> cell.numericCellValue.toString()
+//                        CellType.STRING -> cell.stringCellValue
+//                        CellType.BOOLEAN -> cell.booleanCellValue.toString()
+//                        CellType.FORMULA -> cell.cellFormula
+//                        else -> ""
+//                    }
+//                    // Log cell content
+//                    Log.d("Cell[$rowIndex][$colIndex]: ", cellValue)
+//                }
+//            }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        } finally {
+////            inputStream.close()
+//        }
+//    }
 
     private suspend fun saveBranchesReportData(reports: List<BranchReportLocalDTO>) {
         branchesReportsDao.insertBranchesReports(reports)
