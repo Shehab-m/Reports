@@ -30,9 +30,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.aay.compose.barChart.model.BarParameters
 import com.aay.compose.donutChart.model.PieChartData
 import com.leithcarsreports.R
+import com.leithcarsreports.presentation.composable.BarChartSample
 import com.leithcarsreports.presentation.composable.DonutChartSample
+import com.leithcarsreports.presentation.composable.PieChartSample
 import java.io.IOException
 import java.io.InputStream
 
@@ -56,8 +59,8 @@ fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionList
         Color(0xFF00FF00),
         Color(0xFFFFFF00),
     )
-    val chartData = if (state.reports.isNotEmpty()) {
-        state.reports.mapIndexed { index, report ->
+    val branchesChartData = if (state.branchesReports.isNotEmpty()) {
+        state.branchesReports.mapIndexed { index, report ->
             val colorIndex = index % colors.size
             PieChartData(
                 partName = report.branchName,
@@ -68,13 +71,40 @@ fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionList
     } else {
         emptyList()
     }
+
+    val carsChartData = if (state.carsReports.isNotEmpty()) {
+        state.carsReports.mapIndexed { index, report ->
+            val colorIndex = index % colors.size
+            PieChartData(
+                partName = report.carName,
+                data = report.carSalesValue,
+                color = colors[colorIndex],
+            )
+        }
+    } else {
+        emptyList()
+    }
+
+    val barChartData = if (state.branchesCarsReports.isNotEmpty()) {
+        state.branchesCarsReports.mapIndexed { index, report ->
+            val colorIndex = index % colors.size
+            BarParameters(
+                dataName = "Services 1",
+                data = listOf(10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0),
+                barColor = Color(0xFF0027FF)
+            )
+        }
+    } else {
+        emptyList()
+    }
     val xlsxFilter = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     val branchesLauncher = launchOpenDocument(listener::onClickUploadFileBranches)
     val branchesCarsLauncher = launchOpenDocument(listener::onClickUploadFileBranches)
     val staffLauncher = launchOpenDocument(listener::onClickUploadFileBranches)
-    val carsLauncher = launchOpenDocument(listener::onClickUploadFileBranches)
+    val carsLauncher = launchOpenDocument(listener::onClickUploadFileCars)
     Box(
-        modifier = Modifier.fillMaxSize(). background (Color(0xFFF5F5F5)) // Use the hex code for light gray
+        modifier = Modifier.fillMaxSize()
+            .background(Color(0xFFF5F5F5)) // Use the hex code for light gray
     ) {
         val imagePainter: Painter =
             painterResource(id = R.drawable.screenshot) // Replace 'your_image' with your actual image resource name
@@ -84,7 +114,11 @@ fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionList
             modifier = Modifier.fillMaxSize().alpha(0.4f), // Apply 50% transparency
             contentScale = ContentScale.Fit
         )
-        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+        Column(
+            Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             HorizontalPager(
                 modifier = Modifier,
                 state = pagerState,
@@ -93,11 +127,11 @@ fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionList
 
                 when (page) {
                     0 -> {
-                        DonutChartSample(chartData)
+                        DonutChartSample(branchesChartData)
                     }
 
                     1 -> {
-
+                        PieChartSample(carsChartData)
                     }
 
                     else -> {
@@ -106,11 +140,21 @@ fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionList
                 }
             }
             Button(
-                onClick = { when (pagerState.currentPage) {
-                    0 -> {
-                        branchesLauncher.launch(xlsxFilter)
+                onClick = {
+                    when (pagerState.currentPage) {
+                        0 -> {
+                            branchesLauncher.launch(xlsxFilter)
+                        }
+
+                        1 -> {
+                            Log.d("onClickUploadFileCars: ","${pagerState.currentPage}")
+                            carsLauncher.launch(xlsxFilter)
+                        }
+
+                        else -> {
+
+                        }
                     }
-                }
                 }
             ) {
                 Text(text = state.buttonText, fontSize = 42.sp)

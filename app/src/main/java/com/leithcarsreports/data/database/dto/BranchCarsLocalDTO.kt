@@ -11,12 +11,13 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
-@Entity(tableName = "branches_table")
+@Entity(tableName = "branches_cars_table")
 @TypeConverters(Converters::class)
-data class BranchReportLocalDTO(
+data class BranchCarsLocalDTO(
     @PrimaryKey(autoGenerate = true)
     val branchReportId: Int = 0,
     val branchName: String,
+    val carName: String,
     val branchSalesValue: Double,
     var createdAt: Long = 0
 ) {

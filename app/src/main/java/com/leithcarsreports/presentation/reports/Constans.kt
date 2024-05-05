@@ -15,6 +15,7 @@ object AlmntakaAlhora {
     val SalesMan6Value = ReportsViewModel.CellIndex(row = 7, column = 2)
     val SalesMan7Name = ReportsViewModel.CellIndex(row = 8, column = 16)
     val SalesMan7Value = ReportsViewModel.CellIndex(row = 8, column = 2)
+
     val DongFengName = ReportsViewModel.CellIndex(row = 1, column = 15)
     val DongFengValue = ReportsViewModel.CellIndex(row = 9, column = 15)
     val BydName = ReportsViewModel.CellIndex(row = 1, column = 14)
@@ -48,6 +49,7 @@ object KhaldaMulitBrand {
     val SalesMan4Value = ReportsViewModel.CellIndex(row = 15, column = 2)
     val SalesMan5Name = ReportsViewModel.CellIndex(row = 16, column = 16)
     val SalesMan5Value = ReportsViewModel.CellIndex(row = 16, column = 2)
+
     val DongFengName = ReportsViewModel.CellIndex(row = 11, column = 15)
     val DongFengValue = ReportsViewModel.CellIndex(row = 17, column = 15)
     val BydName = ReportsViewModel.CellIndex(row = 11, column = 14)
@@ -81,11 +83,11 @@ object KkaldaDongFeng {
     val SalesMan5Value = ReportsViewModel.CellIndex(row = 24, column = 2)
     val SalesMan6Name = ReportsViewModel.CellIndex(row = 25, column = 16)
     val SalesMan6Value = ReportsViewModel.CellIndex(row = 25, column = 2)
+
     val BydName = ReportsViewModel.CellIndex(row = 19, column = 3)
     val BydValue = ReportsViewModel.CellIndex(row = 26, column = 3)
     val HugeName = ReportsViewModel.CellIndex(row = 19, column = 15)
     val HugeValue = ReportsViewModel.CellIndex(row = 26, column = 4)
-
     val Rich_6Name = ReportsViewModel.CellIndex(row = 19, column = 13)
     val Rich_6Value = ReportsViewModel.CellIndex(row = 26, column = 5)
     val MnvName = ReportsViewModel.CellIndex(row = 19, column = 12)
@@ -123,6 +125,7 @@ object Arbad {
     val SalesMan5Value = ReportsViewModel.CellIndex(row = 34, column = 2)
     val SalesMan6Name = ReportsViewModel.CellIndex(row = 35, column = 16)
     val SalesMan6Value = ReportsViewModel.CellIndex(row = 35, column = 2)
+
     val DongFengName = ReportsViewModel.CellIndex(row = 29, column = 15)
     val DongFengValue = ReportsViewModel.CellIndex(row = 36, column = 15)
     val BydName = ReportsViewModel.CellIndex(row = 29, column = 14)
@@ -146,6 +149,7 @@ object Arbad {
 object Fleet {
     val SalesMan1Name = ReportsViewModel.CellIndex(row = 39, column = 16)
     val SalesMan1Value = ReportsViewModel.CellIndex(row = 39, column = 15)
+
     val DongFengName = ReportsViewModel.CellIndex(row = 38, column = 15)
     val DongFengValue = ReportsViewModel.CellIndex(row = 39, column = 15)
     val BydName = ReportsViewModel.CellIndex(row = 38, column = 14)

@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.leithcarsreports.data.database.daos.BranchesReportsDao
 import com.leithcarsreports.data.database.ReportsDatabase
+import com.leithcarsreports.data.database.daos.BranchesCarsReportsDao
+import com.leithcarsreports.data.database.daos.CarsReportsDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,6 +23,17 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideBranchesReportsDoa(reportsDatabase: ReportsDatabase): BranchesReportsDao = reportsDatabase.getBranchesReportsDao()
+    fun provideBranchesReportsDoa(reportsDatabase: ReportsDatabase): BranchesReportsDao =
+        reportsDatabase.getBranchesReportsDao()
+
+    @Singleton
+    @Provides
+    fun provideCarsReportsDoa(reportsDatabase: ReportsDatabase): CarsReportsDao =
+        reportsDatabase.getCarsReportsDao()
+
+    @Singleton
+    @Provides
+    fun provideBranchesCarsReportsDao(reportsDatabase: ReportsDatabase): BranchesCarsReportsDao =
+        reportsDatabase.getBranchesCarsReportsDao()
 
 }

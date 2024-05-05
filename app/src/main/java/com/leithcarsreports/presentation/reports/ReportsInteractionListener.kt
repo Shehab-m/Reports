@@ -6,4 +6,5 @@ import java.io.InputStream
 interface ReportsInteractionListener : BaseInteractionListener {
     fun onClickUploadFileBranches(inputStream: InputStream)
     fun onClickUploadFileCars(inputStream: InputStream)
+    fun onClickUploadFileBranchesCars(inputStream: InputStream)
 }
