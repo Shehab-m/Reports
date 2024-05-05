@@ -85,21 +85,9 @@ fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionList
         emptyList()
     }
 
-    val barChartData = if (state.branchesCarsReports.isNotEmpty()) {
-        state.branchesCarsReports.mapIndexed { index, report ->
-            val colorIndex = index % colors.size
-            BarParameters(
-                dataName = "Services 1",
-                data = listOf(10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0),
-                barColor = Color(0xFF0027FF)
-            )
-        }
-    } else {
-        emptyList()
-    }
     val xlsxFilter = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     val branchesLauncher = launchOpenDocument(listener::onClickUploadFileBranches)
-    val branchesCarsLauncher = launchOpenDocument(listener::onClickUploadFileBranches)
+    val branchesCarsLauncher = launchOpenDocument(listener::onClickUploadFileBranchesCars)
     val staffLauncher = launchOpenDocument(listener::onClickUploadFileBranches)
     val carsLauncher = launchOpenDocument(listener::onClickUploadFileCars)
     Box(
@@ -134,29 +122,36 @@ fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionList
                         PieChartSample(carsChartData)
                     }
 
+                    2 -> {
+                        BarChartSample(state.branchesCarsReports)
+                    }
+
                     else -> {
 
                     }
                 }
             }
-            Button(
-                onClick = {
-                    when (pagerState.currentPage) {
-                        0 -> {
-                            branchesLauncher.launch(xlsxFilter)
-                        }
+            Button(onClick = {
+                when (pagerState.currentPage) {
+                    0 -> {
+                        branchesLauncher.launch(xlsxFilter)
+                    }
 
-                        1 -> {
-                            Log.d("onClickUploadFileCars: ","${pagerState.currentPage}")
-                            carsLauncher.launch(xlsxFilter)
-                        }
+                    1 -> {
+                        Log.d("onClickUploadFileCars: ", "${pagerState.currentPage}")
+                        carsLauncher.launch(xlsxFilter)
+                    }
 
-                        else -> {
+                    2 -> {
+                        Log.d("onClickUploadFileCars: ", "${pagerState.currentPage}")
+                        branchesCarsLauncher.launch(xlsxFilter)
+                    }
 
-                        }
+                    else -> {
+
                     }
                 }
-            ) {
+            }) {
                 Text(text = state.buttonText, fontSize = 42.sp)
             }
         }
