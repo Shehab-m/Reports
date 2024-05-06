@@ -25,4 +25,7 @@ interface BranchesReportsDao {
 
     @Insert
     suspend fun insertBranchesReports(reports : List<BranchReportLocalDTO>)
+
+    @Query("SELECT * FROM branches_table WHERE createdAt >= :startDate AND createdAt <= :endDate")
+    fun getReportsBetweenDates(startDate: Long, endDate: Long): Flow<List<BranchReportLocalDTO>>
 }

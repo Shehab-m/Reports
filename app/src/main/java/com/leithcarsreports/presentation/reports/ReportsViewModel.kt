@@ -1,6 +1,8 @@
 package com.leithcarsreports.presentation.reports
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
 import com.leithcarsreports.data.database.daos.BranchesCarsReportsDao
 import com.leithcarsreports.data.database.daos.BranchesReportsDao
@@ -10,12 +12,12 @@ import com.leithcarsreports.data.database.dto.BranchReportLocalDTO
 import com.leithcarsreports.data.database.dto.CarReportLocalDTO
 import com.leithcarsreports.presentation.base.BaseViewModel
 import com.leithcarsreports.presentation.utils.Branches
+import com.leithcarsreports.presentation.utils.convertStringToTimestamp
+import com.leithcarsreports.presentation.utils.isFromDateIsBeforeTheToDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.apache.poi.ss.usermodel.Cell
-import org.apache.poi.ss.usermodel.CellType
-import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
@@ -32,6 +34,55 @@ class ReportsViewModel @Inject constructor(
     init {
         getChartsData()
     }
+
+    override fun onChangeFromDate(date: String) {
+        updateState { it.copy(fromDate = date) }
+    }
+
+    override fun getBranchesWithinDates() {
+        val fromDate = convertStringToTimestamp(state.value.fromDate)
+        val toDate = convertStringToTimestamp(state.value.toDate)
+        viewModelScope.launch {
+            branchesReportsDao.getReportsBetweenDates(fromDate,toDate).collectLatest { reports ->
+                val combinedReports = combineReportsByBranchName(reports)
+                updateState { it.copy(branchesReports = combinedReports) }
+            }
+        }
+    }
+
+    override fun getCarsWithinDates() {
+        val fromDate = convertStringToTimestamp(state.value.fromDate)
+        val toDate = convertStringToTimestamp(state.value.toDate)
+        viewModelScope.launch {
+            carsReportsDao.getReportsBetweenDates(fromDate,toDate).collectLatest { reports ->
+                val combinedReports = combineReportsByCarName(reports)
+                updateState { it.copy(carsReports = combinedReports) }
+            }
+        }
+    }
+
+    override fun getBranchesCarsWithinDates() {
+        val fromDate = convertStringToTimestamp(state.value.fromDate)
+        val toDate = convertStringToTimestamp(state.value.toDate)
+        viewModelScope.launch {
+            branchesCarsReportsDao.getReportsBetweenDates(fromDate,toDate).collectLatest { reports ->
+                val combinedReports = combineReportsByBranchAndCarName(reports)
+                updateState { it.copy(branchesCarsReports = combinedReports) }
+            }
+        }
+    }
+
+    override fun onChangeToDate(date: String) {
+        if (state.value.fromDate.isEmpty()) {
+            sendEffect(ReportsUIEffect.ShowToast("Please, select from date first"))
+        } else if (!isFromDateIsBeforeTheToDate(state.value.fromDate, date)) {
+            sendEffect(ReportsUIEffect.ShowToast("Sorry, you should make this date after the ${state.value.fromDate}"))
+        } else {
+            updateState { it.copy(toDate = date) }
+        }
+
+    }
+
 
     override fun onClickUploadFileBranches(inputStream: InputStream) {
         try {
@@ -318,7 +369,7 @@ class ReportsViewModel @Inject constructor(
         getBranchesCarsChartData()
     }
 
-    private fun getBranchesChartData() {
+    override fun getBranchesChartData() {
         viewModelScope.launch {
             branchesReportsDao.getBranchesReports().collectLatest { reports ->
                 val combinedReports = combineReportsByBranchName(reports)
@@ -327,7 +378,7 @@ class ReportsViewModel @Inject constructor(
         }
     }
 
-    private fun getCarsChartData() {
+    override fun getCarsChartData() {
         viewModelScope.launch {
             carsReportsDao.getCarsReports().collectLatest { reports ->
                 val combinedReports = combineReportsByCarName(reports)
@@ -336,7 +387,7 @@ class ReportsViewModel @Inject constructor(
         }
     }
 
-    private fun getBranchesCarsChartData() {
+    override fun getBranchesCarsChartData() {
         viewModelScope.launch {
             branchesCarsReportsDao.getBranchesCarsReports().collectLatest { reports ->
                 val combinedReports = combineReportsByBranchAndCarName(reports)
@@ -390,7 +441,11 @@ class ReportsViewModel @Inject constructor(
 
         // Convert the map back to a list of BranchCarsLocalDTO
         val combinedReports = combinedReportsMap.map { (key, totalSales) ->
-            BranchCarsLocalDTO(branchName = key.first, carName = key.second, branchSalesValue = totalSales)
+            BranchCarsLocalDTO(
+                branchName = key.first,
+                carName = key.second,
+                branchSalesValue = totalSales
+            )
         }
 
         return combinedReports

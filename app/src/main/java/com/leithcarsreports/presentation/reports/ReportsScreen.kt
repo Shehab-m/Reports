@@ -2,19 +2,27 @@ package com.leithcarsreports.presentation.reports
 
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -28,21 +36,34 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.aay.compose.barChart.model.BarParameters
 import com.aay.compose.donutChart.model.PieChartData
 import com.leithcarsreports.R
 import com.leithcarsreports.presentation.composable.BarChartSample
 import com.leithcarsreports.presentation.composable.DonutChartSample
+import com.leithcarsreports.presentation.composable.EventHandler
 import com.leithcarsreports.presentation.composable.PieChartSample
+import com.leithcarsreports.presentation.composable.XCalenderTextField
+import com.leithcarsreports.presentation.ui.theme.Purple80
+import com.leithcarsreports.presentation.ui.theme.background
+import com.leithcarsreports.presentation.ui.theme.onBackground87
 import java.io.IOException
 import java.io.InputStream
 
 @Composable
 fun ReportsScreen(viewModel: ReportsViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
-
+    val context = LocalContext.current
+    EventHandler(viewModel.effect) { effect ->
+        when (effect) {
+            is ReportsUIEffect.ShowToast -> {
+                Toast.makeText(context, effect.message, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
     ReportsScreenContent(state, viewModel)
 }
 
@@ -112,18 +133,152 @@ fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionList
                 state = pagerState,
                 userScrollEnabled = true,
             ) { page ->
-
                 when (page) {
                     0 -> {
-                        DonutChartSample(branchesChartData)
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(20.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 60.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = "From:",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        textAlign = TextAlign.Center,
+                                        color = onBackground87,
+                                        modifier = Modifier.padding(end = 18.dp)
+                                    )
+                                    XCalenderTextField(
+                                        modifier = Modifier.width(155.dp),
+                                        onClick = { listener.onChangeFromDate(it) },
+                                        selectedDate = state.fromDate
+                                    )
+                                }
+                                Column {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(
+                                            text = "To:",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            textAlign = TextAlign.Center,
+                                            color = onBackground87,
+                                            modifier = Modifier.padding(start = 16.dp, end = 18.dp)
+                                        )
+                                        XCalenderTextField(
+                                            modifier = Modifier.width(155.dp),
+                                            onClick = { listener.onChangeToDate(it) },
+                                            selectedDate = state.toDate
+                                        )
+                                    }
+                                }
+                                Button(modifier = Modifier.padding(start = 20.dp),
+                                    onClick = { listener.getBranchesWithinDates() }) {
+                                    Text(text = "Get", fontSize = 24.sp)
+                                }
+                            }
+                            DonutChartSample(branchesChartData)
+                        }
                     }
 
                     1 -> {
-                        PieChartSample(carsChartData)
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(20.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 60.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = "From:",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        textAlign = TextAlign.Center,
+                                        color = onBackground87,
+                                        modifier = Modifier.padding(end = 18.dp)
+                                    )
+                                    XCalenderTextField(
+                                        modifier = Modifier.width(155.dp),
+                                        onClick = { listener.onChangeFromDate(it) },
+                                        selectedDate = state.fromDate
+                                    )
+                                }
+                                Column {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(
+                                            text = "To:",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            textAlign = TextAlign.Center,
+                                            color = onBackground87,
+                                            modifier = Modifier.padding(start = 16.dp, end = 18.dp)
+                                        )
+                                        XCalenderTextField(
+                                            modifier = Modifier.width(155.dp),
+                                            onClick = { listener.onChangeToDate(it) },
+                                            selectedDate = state.toDate
+                                        )
+                                    }
+                                }
+                                Button(modifier = Modifier.padding(start = 20.dp),
+                                    onClick = { listener.getCarsWithinDates() }) {
+                                    Text(text = "Get", fontSize = 24.sp)
+                                }
+                            }
+                            PieChartSample(carsChartData)
+                        }
                     }
 
                     2 -> {
-                        BarChartSample(state.branchesCarsReports)
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(20.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 60.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = "From:",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        textAlign = TextAlign.Center,
+                                        color = onBackground87,
+                                        modifier = Modifier.padding(end = 18.dp)
+                                    )
+                                    XCalenderTextField(
+                                        modifier = Modifier.width(155.dp),
+                                        onClick = { listener.onChangeFromDate(it) },
+                                        selectedDate = state.fromDate
+                                    )
+                                }
+                                Column {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(
+                                            text = "To:",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            textAlign = TextAlign.Center,
+                                            color = onBackground87,
+                                            modifier = Modifier.padding(start = 16.dp, end = 18.dp)
+                                        )
+                                        XCalenderTextField(
+                                            modifier = Modifier.width(155.dp),
+                                            onClick = { listener.onChangeToDate(it) },
+                                            selectedDate = state.toDate
+                                        )
+                                    }
+                                }
+                                Button(modifier = Modifier.padding(start = 20.dp),
+                                    onClick = { listener.getBranchesCarsWithinDates() }) {
+                                    Text(text = "Get", fontSize = 24.sp)
+                                }
+                            }
+                            BarChartSample(state.branchesCarsReports)
+                        }
                     }
 
                     else -> {
@@ -131,28 +286,53 @@ fun ReportsScreenContent(state: ReportsUIState, listener: ReportsInteractionList
                     }
                 }
             }
-            Button(onClick = {
-                when (pagerState.currentPage) {
-                    0 -> {
-                        branchesLauncher.launch(xlsxFilter)
-                    }
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                Button(onClick = {
+                    when (pagerState.currentPage) {
+                        0 -> {
+                            branchesLauncher.launch(xlsxFilter)
+                        }
 
-                    1 -> {
-                        Log.d("onClickUploadFileCars: ", "${pagerState.currentPage}")
-                        carsLauncher.launch(xlsxFilter)
-                    }
+                        1 -> {
+                            Log.d("onClickUploadFileCars: ", "${pagerState.currentPage}")
+                            carsLauncher.launch(xlsxFilter)
+                        }
 
-                    2 -> {
-                        Log.d("onClickUploadFileCars: ", "${pagerState.currentPage}")
-                        branchesCarsLauncher.launch(xlsxFilter)
-                    }
+                        2 -> {
+                            Log.d("onClickUploadFileCars: ", "${pagerState.currentPage}")
+                            branchesCarsLauncher.launch(xlsxFilter)
+                        }
 
-                    else -> {
+                        else -> {
 
+                        }
                     }
+                }) {
+                    Text(text = state.buttonText, fontSize = 32.sp)
                 }
-            }) {
-                Text(text = state.buttonText, fontSize = 42.sp)
+                Button(
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                    onClick = {
+                        when (pagerState.currentPage) {
+                            0 -> {
+                                listener.getBranchesChartData()
+                            }
+
+                            1 -> {
+                                listener.getCarsChartData()
+                            }
+
+                            2 -> {
+                                listener.getBranchesCarsChartData()
+                            }
+
+                            else -> {
+                            }
+                        }
+                    }) {
+                    Text(text = "Get Latest", fontSize = 32.sp, color = MaterialTheme.colorScheme.primary)
+                }
             }
         }
     }

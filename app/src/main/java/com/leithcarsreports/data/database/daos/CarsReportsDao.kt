@@ -25,4 +25,7 @@ interface CarsReportsDao {
 
     @Insert
     suspend fun insertCarReports(reports : List<CarReportLocalDTO>)
+
+    @Query("SELECT * FROM cars_table WHERE createdAt >= :startDate AND createdAt <= :endDate")
+    fun getReportsBetweenDates(startDate: Long, endDate: Long): Flow<List<CarReportLocalDTO>>
 }

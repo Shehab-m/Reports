@@ -26,13 +26,18 @@ fun BarChartSample(data: List<BranchCarsLocalDTO>) {
     val khaldaMulitBrandBranch = data.filter { it.branchName == "فرع - خلدا ملتي براند" }
     val arbedBranch = data.filter { it.branchName == "فرع - اربد" }
     val fleetBranch = data.filter { it.branchName == "مبيعات االسطول - Fleet" }
-    val branchesNames = listOf("فرع - المنطقة الحره","فرع - خلدا ملتي براند","فرع - اربد","Fleet")
-    var vwDatatList = data.filter { it.carName == "VW ID 3,4,6"}.map { it.branchSalesValue }.toMutableList()
-    Log.d( "BarChartSample:fffffffffffff ","${vwDatatList}")
+    val branchesNames =
+        listOf("فرع - المنطقة الحره", "فرع - خلدا ملتي براند", "فرع - اربد", "Fleet")
+    var vwDatatList =
+        data.filter { it.carName == "VW ID 3,4,6" }.map { it.branchSalesValue }.toMutableList()
+    Log.d("BarChartSample:fffffffffffff ", "${vwDatatList}")
     vwDatatList.add(0.0)
     vwDatatList.add(0.0)
-    Log.d( "BarChartSample:fffffffffffff ","${vwDatatList}")
-    Log.d( "BarChartSample:ffffffffffffffff ","${data.filter { it.carName == "Mg" }.map { it.branchSalesValue }.take(4)}")
+    Log.d("BarChartSample:fffffffffffff ", "${vwDatatList}")
+    Log.d(
+        "BarChartSample:ffffffffffffffff ",
+        "${data.filter { it.carName == "Mg" }.map { it.branchSalesValue }.take(4)}"
+    )
     val chartData = listOf(
         BarParameters(
             dataName = "Mg",
@@ -61,7 +66,8 @@ fun BarChartSample(data: List<BranchCarsLocalDTO>) {
         ),
         BarParameters(
             dataName = "HONDA E:NS1",
-            data = data.filter { it.carName.replace("\\s".toRegex(), "") == "HONDAE:NS1"}.map { it.branchSalesValue }.take(4),
+            data = data.filter { it.carName.replace("\\s".toRegex(), "") == "HONDAE:NS1" }
+                .map { it.branchSalesValue }.take(4),
             barColor = Color(0xFF00FF00)
         ),
         BarParameters(
@@ -71,17 +77,17 @@ fun BarChartSample(data: List<BranchCarsLocalDTO>) {
         ),
         BarParameters(
             dataName = "BYD",
-            data = data.filter { it.carName == "BYD"}.map { it.branchSalesValue },
+            data = data.filter { it.carName == "BYD" }.map { it.branchSalesValue },
             barColor = Color(0xF9096979)
         ),
         BarParameters(
             dataName = "DONGFENG",
-            data = data.filter { it.carName == "DONGFENG"}.map { it.branchSalesValue },
+            data = data.filter { it.carName == "DONGFENG" }.map { it.branchSalesValue },
             barColor = Color(0xFF9027FF)
         ),
     )
-    Log.d("BarChartSample:hhtrhtr ","${chartData}")
-    Log.d("BarChartSample:hhtrhtr ","${data.map { it.branchName }}")
+    Log.d("BarChartSample:hhtrhtr ", "${chartData}")
+    Log.d("BarChartSample:hhtrhtr ", "${data.map { it.branchName }}")
 //    val barChartData = if (data.isNotEmpty()) {
 //        val colors = listOf(
 //            Color(0xFFADC9FF),
@@ -106,10 +112,10 @@ fun BarChartSample(data: List<BranchCarsLocalDTO>) {
         Modifier.fillMaxWidth().height(650.dp).padding(horizontal = 120.dp)
     ) {
         BarChart(
-            chartParameters = chartData.take(9),
+            chartParameters = if (data.isEmpty()) emptyList() else chartData.take(9),
             gridColor = Color.LightGray,
             isShowGrid = true,
-            xAxisData = branchesNames.take(4),
+            xAxisData = if (data.isEmpty()) emptyList() else branchesNames.take(4),
             animateChart = true,
             showGridWithSpacer = true,
             yAxisStyle = TextStyle(

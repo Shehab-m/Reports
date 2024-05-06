@@ -9,5 +9,7 @@ data class ReportsUIState(
     val branchesReports: List<BranchReportLocalDTO> = emptyList(),
     val carsReports: List<CarReportLocalDTO> = emptyList(),
     val branchesCarsReports: List<BranchCarsLocalDTO> = emptyList(),
-    val buttonText: String = "Upload"
+    val buttonText: String = "Upload",
+    val toDate: String = "",
+    val fromDate: String = "",
 )
